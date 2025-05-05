@@ -1,6 +1,11 @@
+// ✅ App.jsx CORREGIDO Y SIMPLIFICADO
 import React, { useState } from 'react';
+import MenuScreen from './MenuScreen';
+import CuentaScreen from './CuentaScreen';
+import HistorialScreen from './HistorialScreen';
 
 export default function App() {
+  const [currentScreen, setCurrentScreen] = useState('onboarding');
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
@@ -8,29 +13,50 @@ export default function App() {
       icon: 'https://img.icons8.com/fluency/256/lock-2.png',
       title: '🔒 Vehículo Protegido, Siempre Seguro',
       action: '¡Quiero asegurar mi auto!',
-      text: 'Tu auto está asegurado en nuestro taller con beneficios exclusivos por solo 150 Bs al mes.\nAcumula cuotas mensuales para cualquier servicio. ¿No las usaste? ¡Te devolvemos tu dinero!',
+      text: 'Tu auto está asegurado en nuestro taller con beneficios exclusivos por solo 150 Bs al mes.\nAcumula cuotas mensuales para cualquier servicio. ¿No las usaste? ¡Te devolvemos tu dinero!'
     },
     {
       icon: 'https://img.icons8.com/fluency/256/tow-truck.png',
       title: '🚨 Auxilio en el Lugar',
       action: 'Solicitar asistencia ahora',
-      text: '¿Tu vehículo se detuvo? Vamos hasta donde estés: apertura de puertas, batería, llantas o combustible.\nRemolque gratis hasta nuestro taller incluido.',
+      text: '¿Tu vehículo se detuvo? Vamos hasta donde estés: apertura de puertas, batería, llantas o combustible.\nRemolque gratis hasta nuestro taller incluido.'
     },
     {
       icon: 'https://img.icons8.com/fluency/256/task.png',
       title: '📋 Estado en Tiempo Real',
       action: 'Ver el estado de mi auto',
-      text: 'Sigue cada detalle de la reparación: piezas cambiadas, historial y agenda fácilmente tu próxima revisión.',
-    },
+      text: 'Sigue cada detalle de la reparación: piezas cambiadas, historial y agenda fácilmente tu próxima revisión.'
+    }
   ];
 
   const handleNext = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    if (currentSlide === slides.length - 1) {
+      setCurrentScreen('menu');
+    } else {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }
   };
 
   const handlePrev = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
+
+  if (currentScreen === 'menu') {
+    return (
+      <MenuScreen
+        goToCuenta={() => setCurrentScreen('cuentas')}
+        goToHistorial={() => setCurrentScreen('historial')}
+      />
+    );
+  }
+
+  if (currentScreen === 'cuentas') {
+    return <CuentaScreen goBack={() => setCurrentScreen('menu')} />;
+  }
+
+  if (currentScreen === 'historial') {
+    return <HistorialScreen goBack={() => setCurrentScreen('menu')} />;
+  }
 
   return (
     <div className="min-h-screen bg-[#003366] flex items-center justify-center font-merriweather text-white transition-all duration-500 p-4">
@@ -70,7 +96,7 @@ export default function App() {
               onClick={handleNext}
               className="bg-[#A7E92F] hover:bg-[#c3ff4d] text-[#003366] font-semibold px-6 py-3 rounded-full transition-colors w-32"
             >
-              Siguiente
+              {currentSlide === slides.length - 1 ? 'Ir al Menú' : 'Siguiente'}
             </button>
           </div>
         </div>
